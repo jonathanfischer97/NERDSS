@@ -1,0 +1,71 @@
+# Input file
+
+start parameters
+    nItr = 1000000
+    timeStep = 0.1
+    timeWrite = 5
+    trajWrite = 100
+    restartWrite = 1000000
+    checkPoint = 1000000
+    pdbWrite = 1000000
+end parameters
+
+start boundaries
+     WaterBox = [301,301,1103]  #nm
+end boundaries
+
+start molecules
+    pip2 : 6000
+    ap2 : 600
+    kin : 2
+    syn : 2
+end molecules
+
+start reactions
+    #### PIP2 - AP2 ####
+    pip2(head~P) + ap2(m2muh) <-> pip2(head~P!1).ap2(m2muh!1)
+    onRate3Dka = 1.6
+    offRatekb = 0.0001
+    sigma = 1
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]
+    assocAngles = [1.5707963, 1.5707963, nan, nan, M_PI]
+    observeLabel = ap2Mem
+
+    ### KIN - PIP2 ###
+    kin(pi) + pip2(head~U) -> kin(pi) + pip2(head~P)
+    onRate3Dka = 0.24  #nm3/us, kon=26.1 uM-1s-1
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]
+    assocAngles = [1.5707963, 1.5707963, nan, nan, M_PI]
+    sigma = 1.0
+    observeLabel = pip2
+
+    ### KIN - AP2 ### 
+    kin(ap) + ap2(sy) <-> kin(ap!1).ap2(sy!1)
+    onRate3Dka = 1  #nm3/us, kon=0.6 uM-1s-1
+    offRatekb = 1 #Kd=1.66 uM
+    sigma = 1.0
+    assocAngles = [1.5707963, 2.35619, nan, M_PI, M_PI]
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]	
+
+    ### SYN - PIP2 ###
+    syn(pi) + pip2(head~P) -> syn(pi) + pip2(head~U)
+    onRate3Dka = 50.0  #nm3/us, kon=26.1 uM-1s-1
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]
+    assocAngles = [1.5707963, 1.5707963, nan, nan, M_PI]
+    sigma = 1.0
+    observeLabel = pip
+
+    ### SYN - AP2 ### 
+    syn(ap) + ap2(sy) <-> syn(ap!1).ap2(sy!1)
+    onRate3Dka = 1  #nm3/us, kon=0.6 uM-1s-1
+    offRatekb = 1 #Kd=1.66 uM
+    sigma = 1.0
+    assocAngles = [1.5707963, 2.35619, nan, M_PI, M_PI]
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]	
+
+end reactions
