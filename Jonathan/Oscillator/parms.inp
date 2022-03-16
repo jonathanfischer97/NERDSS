@@ -1,7 +1,7 @@
 # Input file
 
 start parameters
-    nItr = 1000000
+    nItr = 10000000
     timeStep = 0.1
     timeWrite = 50
     trajWrite = 100
@@ -17,14 +17,14 @@ end boundaries
 start molecules
     pip2 : 4897 (head~U)
     ap2 : 569
-    kin : 1
-    syn : 2
+    kin : 100
+    syn : 100
 end molecules
 
 start reactions
     #### PIP2 - AP2 ####
     pip2(head~P) + ap2(m2muh) <-> pip2(head~P!1).ap2(m2muh!1)
-    onRate3Dka = 1.66 #ka2
+    onRate3Dka = 100.66 #ka2
     offRatekb = 3.93 #kb2
     sigma = 1
     norm1 = [0,0,1]
