@@ -1,0 +1,553 @@
+Time (s): 0
+1000	pip2: 1. 
+500	ap2: 1. 
+100	trans: 1. 
+100	aak1: 1. 
+Time (s): 1e-05
+1000	pip2: 1. 
+500	ap2: 1. 
+100	trans: 1. 
+100	aak1: 1. 
+Time (s): 2e-05
+1000	pip2: 1. 
+500	ap2: 1. 
+100	trans: 1. 
+100	aak1: 1. 
+Time (s): 3e-05
+1000	pip2: 1. 
+500	ap2: 1. 
+100	trans: 1. 
+100	aak1: 1. 
+Time (s): 4e-05
+1000	pip2: 1. 
+500	ap2: 1. 
+100	trans: 1. 
+100	aak1: 1. 
+Time (s): 5e-05
+1000	pip2: 1. 
+500	ap2: 1. 
+100	trans: 1. 
+100	aak1: 1. 
+Time (s): 6e-05
+1000	pip2: 1. 
+500	ap2: 1. 
+100	trans: 1. 
+100	aak1: 1. 
+Time (s): 7e-05
+1000	pip2: 1. 
+500	ap2: 1. 
+100	trans: 1. 
+100	aak1: 1. 
+Time (s): 8e-05
+1000	pip2: 1. 
+500	ap2: 1. 
+100	trans: 1. 
+100	aak1: 1. 
+Time (s): 9e-05
+1000	pip2: 1. 
+500	ap2: 1. 
+100	trans: 1. 
+100	aak1: 1. 
+Time (s): 0.0001
+999	pip2: 1. 
+100	aak1: 1. 
+499	ap2: 1. 
+1	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00011
+999	pip2: 1. 
+100	aak1: 1. 
+499	ap2: 1. 
+1	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00012
+997	pip2: 1. 
+100	aak1: 1. 
+497	ap2: 1. 
+3	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00013
+997	pip2: 1. 
+100	aak1: 1. 
+497	ap2: 1. 
+3	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00014
+997	pip2: 1. 
+100	aak1: 1. 
+497	ap2: 1. 
+3	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00015
+997	pip2: 1. 
+100	aak1: 1. 
+497	ap2: 1. 
+3	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00016
+996	pip2: 1. 
+100	aak1: 1. 
+496	ap2: 1. 
+4	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00017
+993	pip2: 1. 
+100	aak1: 1. 
+493	ap2: 1. 
+7	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00018
+992	pip2: 1. 
+100	aak1: 1. 
+492	ap2: 1. 
+8	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00019
+992	pip2: 1. 
+100	aak1: 1. 
+492	ap2: 1. 
+8	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.0002
+992	pip2: 1. 
+100	aak1: 1. 
+492	ap2: 1. 
+8	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00021
+992	pip2: 1. 
+100	aak1: 1. 
+492	ap2: 1. 
+8	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00022
+992	pip2: 1. 
+100	aak1: 1. 
+492	ap2: 1. 
+8	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00023
+992	pip2: 1. 
+100	aak1: 1. 
+492	ap2: 1. 
+8	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00024
+991	pip2: 1. 
+100	aak1: 1. 
+491	ap2: 1. 
+9	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00025
+990	pip2: 1. 
+100	aak1: 1. 
+490	ap2: 1. 
+10	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00026
+989	pip2: 1. 
+100	aak1: 1. 
+489	ap2: 1. 
+11	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00027
+988	pip2: 1. 
+100	aak1: 1. 
+488	ap2: 1. 
+12	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00028
+987	pip2: 1. 
+100	aak1: 1. 
+487	ap2: 1. 
+13	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00029
+986	pip2: 1. 
+100	aak1: 1. 
+486	ap2: 1. 
+14	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.0003
+985	pip2: 1. 
+100	aak1: 1. 
+485	ap2: 1. 
+15	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00031
+985	pip2: 1. 
+100	aak1: 1. 
+485	ap2: 1. 
+15	pip2: 1. ap2: 1. 
+100	trans: 1. 
+Time (s): 0.00032
+984	pip2: 1. 
+100	aak1: 1. 
+484	ap2: 1. 
+15	pip2: 1. ap2: 1. 
+1	pip2: 1. ap2: 1. trans: 1. 
+99	trans: 1. 
+Time (s): 0.00033
+984	pip2: 1. 
+100	aak1: 1. 
+484	ap2: 1. 
+15	pip2: 1. ap2: 1. 
+1	pip2: 1. ap2: 1. trans: 1. 
+99	trans: 1. 
+Time (s): 0.00034
+984	pip2: 1. 
+100	aak1: 1. 
+484	ap2: 1. 
+15	pip2: 1. ap2: 1. 
+1	pip2: 1. ap2: 1. trans: 1. 
+99	trans: 1. 
+Time (s): 0.00035
+983	pip2: 1. 
+100	aak1: 1. 
+483	ap2: 1. 
+16	pip2: 1. ap2: 1. 
+1	pip2: 1. ap2: 1. trans: 1. 
+99	trans: 1. 
+Time (s): 0.00036
+983	pip2: 1. 
+100	aak1: 1. 
+483	ap2: 1. 
+16	pip2: 1. ap2: 1. 
+1	pip2: 1. ap2: 1. trans: 1. 
+99	trans: 1. 
+Time (s): 0.00037
+983	pip2: 1. 
+100	aak1: 1. 
+483	ap2: 1. 
+16	pip2: 1. ap2: 1. 
+1	pip2: 1. ap2: 1. trans: 1. 
+99	trans: 1. 
+Time (s): 0.00038
+983	pip2: 1. 
+100	aak1: 1. 
+483	ap2: 1. 
+16	pip2: 1. ap2: 1. 
+1	pip2: 1. ap2: 1. trans: 1. 
+99	trans: 1. 
+Time (s): 0.00039
+982	pip2: 1. 
+100	aak1: 1. 
+482	ap2: 1. 
+16	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.0004
+982	pip2: 1. 
+100	aak1: 1. 
+482	ap2: 1. 
+16	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00041
+981	pip2: 1. 
+100	aak1: 1. 
+481	ap2: 1. 
+17	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00042
+980	pip2: 1. 
+100	aak1: 1. 
+480	ap2: 1. 
+18	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00043
+980	pip2: 1. 
+100	aak1: 1. 
+480	ap2: 1. 
+18	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00044
+979	pip2: 1. 
+100	aak1: 1. 
+479	ap2: 1. 
+19	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00045
+979	pip2: 1. 
+100	aak1: 1. 
+479	ap2: 1. 
+19	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00046
+979	pip2: 1. 
+100	aak1: 1. 
+479	ap2: 1. 
+19	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00047
+978	pip2: 1. 
+100	aak1: 1. 
+478	ap2: 1. 
+20	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00048
+978	pip2: 1. 
+100	aak1: 1. 
+478	ap2: 1. 
+20	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00049
+978	pip2: 1. 
+100	aak1: 1. 
+478	ap2: 1. 
+20	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.0005
+978	pip2: 1. 
+100	aak1: 1. 
+478	ap2: 1. 
+20	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00051
+977	pip2: 1. 
+100	aak1: 1. 
+477	ap2: 1. 
+21	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00052
+977	pip2: 1. 
+100	aak1: 1. 
+477	ap2: 1. 
+21	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00053
+976	pip2: 1. 
+100	aak1: 1. 
+476	ap2: 1. 
+22	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00054
+976	pip2: 1. 
+100	aak1: 1. 
+476	ap2: 1. 
+22	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00055
+976	pip2: 1. 
+100	aak1: 1. 
+476	ap2: 1. 
+22	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00056
+975	pip2: 1. 
+100	aak1: 1. 
+475	ap2: 1. 
+23	pip2: 1. ap2: 1. 
+2	pip2: 1. ap2: 1. trans: 1. 
+98	trans: 1. 
+Time (s): 0.00057
+974	pip2: 1. 
+100	aak1: 1. 
+474	ap2: 1. 
+23	pip2: 1. ap2: 1. 
+3	pip2: 1. ap2: 1. trans: 1. 
+97	trans: 1. 
+Time (s): 0.00058
+974	pip2: 1. 
+100	aak1: 1. 
+474	ap2: 1. 
+22	pip2: 1. ap2: 1. 
+4	pip2: 1. ap2: 1. trans: 1. 
+96	trans: 1. 
+Time (s): 0.00059
+974	pip2: 1. 
+100	aak1: 1. 
+474	ap2: 1. 
+22	pip2: 1. ap2: 1. 
+4	pip2: 1. ap2: 1. trans: 1. 
+96	trans: 1. 
+Time (s): 0.0006
+971	pip2: 1. 
+100	aak1: 1. 
+471	ap2: 1. 
+25	pip2: 1. ap2: 1. 
+4	pip2: 1. ap2: 1. trans: 1. 
+96	trans: 1. 
+Time (s): 0.00061
+971	pip2: 1. 
+100	aak1: 1. 
+471	ap2: 1. 
+24	pip2: 1. ap2: 1. 
+5	pip2: 1. ap2: 1. trans: 1. 
+95	trans: 1. 
+Time (s): 0.00062
+971	pip2: 1. 
+100	aak1: 1. 
+471	ap2: 1. 
+24	pip2: 1. ap2: 1. 
+5	pip2: 1. ap2: 1. trans: 1. 
+95	trans: 1. 
+Time (s): 0.00063
+971	pip2: 1. 
+100	aak1: 1. 
+471	ap2: 1. 
+23	pip2: 1. ap2: 1. 
+6	pip2: 1. ap2: 1. trans: 1. 
+94	trans: 1. 
+Time (s): 0.00064
+970	pip2: 1. 
+100	aak1: 1. 
+470	ap2: 1. 
+24	pip2: 1. ap2: 1. 
+6	pip2: 1. ap2: 1. trans: 1. 
+94	trans: 1. 
+Time (s): 0.00065
+970	pip2: 1. 
+100	aak1: 1. 
+470	ap2: 1. 
+24	pip2: 1. ap2: 1. 
+6	pip2: 1. ap2: 1. trans: 1. 
+94	trans: 1. 
+Time (s): 0.00066
+970	pip2: 1. 
+100	aak1: 1. 
+470	ap2: 1. 
+24	pip2: 1. ap2: 1. 
+6	pip2: 1. ap2: 1. trans: 1. 
+94	trans: 1. 
+Time (s): 0.00067
+969	pip2: 1. 
+100	aak1: 1. 
+469	ap2: 1. 
+24	pip2: 1. ap2: 1. 
+7	pip2: 1. ap2: 1. trans: 1. 
+93	trans: 1. 
+Time (s): 0.00068
+969	pip2: 1. 
+100	aak1: 1. 
+469	ap2: 1. 
+24	pip2: 1. ap2: 1. 
+7	pip2: 1. ap2: 1. trans: 1. 
+93	trans: 1. 
+Time (s): 0.00069
+968	pip2: 1. 
+100	aak1: 1. 
+468	ap2: 1. 
+25	pip2: 1. ap2: 1. 
+7	pip2: 1. ap2: 1. trans: 1. 
+93	trans: 1. 
+Time (s): 0.0007
+967	pip2: 1. 
+100	aak1: 1. 
+467	ap2: 1. 
+26	pip2: 1. ap2: 1. 
+7	pip2: 1. ap2: 1. trans: 1. 
+93	trans: 1. 
+Time (s): 0.00071
+966	pip2: 1. 
+100	aak1: 1. 
+466	ap2: 1. 
+27	pip2: 1. ap2: 1. 
+7	pip2: 1. ap2: 1. trans: 1. 
+93	trans: 1. 
+Time (s): 0.00072
+965	pip2: 1. 
+100	aak1: 1. 
+465	ap2: 1. 
+27	pip2: 1. ap2: 1. 
+8	pip2: 1. ap2: 1. trans: 1. 
+92	trans: 1. 
+Time (s): 0.00073
+965	pip2: 1. 
+100	aak1: 1. 
+465	ap2: 1. 
+27	pip2: 1. ap2: 1. 
+8	pip2: 1. ap2: 1. trans: 1. 
+92	trans: 1. 
+Time (s): 0.00074
+964	pip2: 1. 
+100	aak1: 1. 
+464	ap2: 1. 
+28	pip2: 1. ap2: 1. 
+8	pip2: 1. ap2: 1. trans: 1. 
+92	trans: 1. 
+Time (s): 0.00075
+964	pip2: 1. 
+100	aak1: 1. 
+464	ap2: 1. 
+28	pip2: 1. ap2: 1. 
+8	pip2: 1. ap2: 1. trans: 1. 
+92	trans: 1. 
+Time (s): 0.00076
+964	pip2: 1. 
+100	aak1: 1. 
+464	ap2: 1. 
+28	pip2: 1. ap2: 1. 
+8	pip2: 1. ap2: 1. trans: 1. 
+92	trans: 1. 
+Time (s): 0.00077
+964	pip2: 1. 
+100	aak1: 1. 
+464	ap2: 1. 
+28	pip2: 1. ap2: 1. 
+8	pip2: 1. ap2: 1. trans: 1. 
+92	trans: 1. 
+Time (s): 0.00078
+963	pip2: 1. 
+100	aak1: 1. 
+463	ap2: 1. 
+28	pip2: 1. ap2: 1. 
+9	pip2: 1. ap2: 1. trans: 1. 
+91	trans: 1. 
+Time (s): 0.00079
+961	pip2: 1. 
+100	aak1: 1. 
+461	ap2: 1. 
+29	pip2: 1. ap2: 1. 
+10	pip2: 1. ap2: 1. trans: 1. 
+90	trans: 1. 
+Time (s): 0.0008
+960	pip2: 1. 
+100	aak1: 1. 
+460	ap2: 1. 
+29	pip2: 1. ap2: 1. 
+11	pip2: 1. ap2: 1. trans: 1. 
+89	trans: 1. 
+Time (s): 0.00081
+960	pip2: 1. 
+100	aak1: 1. 
+460	ap2: 1. 
+29	pip2: 1. ap2: 1. 
+11	pip2: 1. ap2: 1. trans: 1. 
+89	trans: 1. 
+Time (s): 0.00082
+960	pip2: 1. 
+100	aak1: 1. 
+460	ap2: 1. 
+29	pip2: 1. ap2: 1. 
+11	pip2: 1. ap2: 1. trans: 1. 
+89	trans: 1. 
+Time (s): 0.00083
+960	pip2: 1. 
+100	aak1: 1. 
+460	ap2: 1. 
+28	pip2: 1. ap2: 1. 
+12	pip2: 1. ap2: 1. trans: 1. 
+88	trans: 1. 
+Time (s): 0.00084
+960	pip2: 1. 
+100	aak1: 1. 
+460	ap2: 1. 
+27	pip2: 1. ap2: 1. 
+13	pip2: 1. ap2: 1. trans: 1. 
+87	trans: 1. 

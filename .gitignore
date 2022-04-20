@@ -10,3 +10,10 @@ new_version/test.nosync
 *.collapsed
 .vscode/
 obj/
+nerdss
+restart*
+rng_state*
+system.psf
+*.pdb
+*.xyz
+*.pptx

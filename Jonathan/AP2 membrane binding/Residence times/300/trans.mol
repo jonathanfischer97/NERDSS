@@ -1,0 +1,22 @@
+##
+# transferrin molecule information file
+##
+
+Name = trans
+isLipid = true
+#checkOverlap = true
+
+# translational diffusion constants
+D = [1.0, 1.0, 0.0]
+
+# rotational diffusion constants
+Dr = [0.00, 0.00, 0.03]
+
+# Coordinates, flat legLenth=6nm
+COM    0.0000    0.0000    0.0000
+ap2    0.0000    0.0000    2.1000
+#pip2   0.0000   0.0000    0.0000
+#ref    0.0000	 0.0000	   0.0000
+
+
+

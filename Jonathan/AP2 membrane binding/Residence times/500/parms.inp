@@ -1,0 +1,51 @@
+# Input file
+
+start parameters
+    nItr = 2500000
+    timeStep = 1
+
+    timeWrite = 10
+    trajWrite = 5000
+    pdbWrite = 500000
+    checkPoint = 100000
+    restartWrite = 500000
+    #scaleMaxDisplace = 10.0
+    overlapSepLimit = 7.0
+    #clusterOverlapCheck = true
+end parameters
+
+start boundaries
+    WaterBox = [100,100,100]
+    xBCtype = reflect
+    yBCtype = reflect
+    zBCtype = reflect
+end boundaries
+
+start molecules
+    pip2 : 1000
+    ap2 : 1
+    trans: 500
+end molecules
+
+start reactions
+    #### AP2 - LIPID #####
+    ap2(b) + pip2(ap2) <-> ap2(b!1).pip2(ap2!1)
+    onRate3Dka = 1 #nm3/us, 400 M-1s-1
+    offRatekb = 330  #Kd=10.5uM
+    sigma = 1.0
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]
+    #length3Dto2D = 30 # in nm
+    assocAngles = [pi, pi, nan, nan, nan]
+
+    ap2(a,b!*) + trans(ap2) <-> ap2(a!1,b!*).trans(ap2!1)
+    #pip2(trans,ap2!*) + trans(pip2) <-> pip2(trans!1,ap2!*).trans(pip2!1)
+    onRate3Dka = .1362 #nm3/us, 8.2e4 M-1s-1
+    offRatekb = 481.7  #Kd=36 nM
+    sigma = 1.0
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]
+    #length3Dto2D = 30 # in nm
+    assocAngles = [1.5707963, 1.5707963, nan, nan, 0.000]
+
+end reactions

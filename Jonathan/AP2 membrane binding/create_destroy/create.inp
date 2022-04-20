@@ -1,0 +1,36 @@
+# Input file
+
+start parameters
+    nItr = 600000
+    timeStep = 1
+   #    pdbWrite = 1000
+    timeWrite = 2
+    trajWrite = 10
+    restartWrite = 100000
+    checkPoint = 10000000
+end parameters
+
+start boundaries
+    waterBox = [100,100,100] #in nm
+end boundaries
+
+start molecules
+    A:10
+    B:1
+end molecules
+
+start reactions
+    #### Prey growth ####
+    A(ser) -> A(ser) + A(ser)
+    rate = 10
+
+    #### Predation ####
+    B(ser) + A(ser) -> B(ser) + B(ser)
+    onRate3Dka = 15
+    sigma = 1
+
+    #### Predator death ####
+    B(ser) -> NULL
+    rate = 2
+
+end reactions

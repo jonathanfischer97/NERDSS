@@ -1,0 +1,22 @@
+##
+# AP2 molecule information file
+##
+
+Name = ap2
+#checkOverlap = true
+
+# translational diffusion constants
+D = [13.0, 13.0, 13.0]
+
+# rotational diffusion constants
+Dr = [0.03, 0.03, 0.03]
+
+# Coordinates, flat legLenth=6nm
+COM    0.0000    0.0000    0.0000
+a    0.0000    0.0000    0.5000
+b    0.0000   0.0000    -0.5000
+
+state = a~U~P
+
+
+
