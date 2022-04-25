@@ -1,0 +1,87 @@
+# Input file
+
+start parameters
+    nItr = 100000000
+    timeStep = 0.1
+    timeWrite = 50
+    trajWrite = 1000000000
+    restartWrite = 100000000
+    checkPoint = 100000000
+    pdbWrite = 100000000
+end parameters
+
+start boundaries
+     WaterBox = [230,230,1431]  #nm
+end boundaries
+
+start molecules
+    pip2 : 3100 (head~U)
+    ap2 : 443
+    kin : 200
+    syn : 134
+end molecules
+
+start reactions
+    #### PIP2 - AP2 ####
+    pip2(head~P) + ap2(m2muh) <-> pip2(head~P!1).ap2(m2muh!1)
+    onRate3Dka = 151 #ka2
+    offRatekb = 146.6 #kb2
+    sigma = 1
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]
+    assocAngles = [1.5707963, 1.5707963, nan, nan, M_PI]
+    observeLabel = ap2Mem
+
+    ### KIN - PIP2 ###
+    kin(pi) + pip2(head~U) <-> kin(pi!1).pip2(head~U!1)
+    onRate3Dka = 24  #ka1
+    offRatekb = 88.7 #s-1  #kb1
+    kcat = 95.8 #kcat1
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]
+    assocAngles = [1.5707963, 1.5707963, nan, nan, M_PI]
+    sigma = 1
+    coupledRxnLabel = autoP
+    observeLabel = pip2
+
+    # KIN autoPhosphorylation #
+    pip2(head~U) -> pip2(head~P)
+    rate = 0.0
+    rxnLabel = autoP
+
+    ### KIN - AP2 ### 
+    kin(ap) + ap2(sy,m2muh!*) <-> kin(ap!1).ap2(sy!1,m2muh!*)
+    onRate3Dka = 18.2  #ka3
+    offRatekb = 228.2 #kb3
+    sigma = 1
+    assocAngles = [1.5707963, 2.35619, nan, M_PI, M_PI]
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]
+    
+    ### SYN - PIP2 ###
+    syn(pi) + pip2(head~P) <-> syn(pi!1).pip2(head~P!1)
+    onRate3Dka = 1.6  #ka7
+    offRatekb = 100.6 #kb7
+    kcat = 33.58 #kcat7
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]
+    assocAngles = [1.5707963, 1.5707963, nan, nan, M_PI]
+    sigma = 1
+    coupledRxnLabel = autoU
+    observeLabel = pip
+
+    # SYN autoDephosphorylation #
+    pip2(head~P) -> pip2(head~U)
+    rate = 0.0
+    rxnLabel = autoU
+
+    ### SYN - AP2 ### 
+    syn(ap) + ap2(sy,m2muh!*) <-> syn(ap!1).ap2(sy!1,m2muh!*)
+    onRate3Dka = 0.46  #ka4
+    offRatekb = 5.3 #kb4
+    sigma = 1
+    assocAngles = [1.5707963, 2.35619, nan, M_PI, M_PI]
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]	
+
+end reactions
