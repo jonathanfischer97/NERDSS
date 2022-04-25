@@ -1,0 +1,88 @@
+# Input file
+
+
+start parameters
+    nItr = 100000000
+    timeStep = 0.1
+    timeWrite = 500
+    trajWrite = 1000000000
+    restartWrite = 100000000
+    checkPoint = 100000000
+    pdbWrite = 100000000
+end parameters
+
+start boundaries
+     WaterBox = [204,204,1302]  #nm
+end boundaries
+
+start molecules
+    pip2 : 2129 (head~U)
+    ap2 : 326
+    kin : 120
+    syn : 238
+end molecules
+
+start reactions
+    #### PIP2 - AP2 ####
+    pip2(head~P) + ap2(m2muh) <-> pip2(head~P!1).ap2(m2muh!1)
+    onRate3Dka = 8.418576459807616 #ka2
+    offRatekb = 320.9719651640651 #kb2
+    sigma = 0.5
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]
+    assocAngles = [1.5707963, 1.5707963, nan, nan, M_PI]
+    observeLabel = ap2Mem
+
+    ### KIN - PIP2 ###
+    kin(pi) + pip2(head~U) <-> kin(pi!1).pip2(head~U!1)
+    onRate3Dka = 2.0187653814526256  #ka1
+    offRatekb = 1000 #s-1  #kb1
+    kcat = 392.20764194987873 #kcat1
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]
+    assocAngles = [1.5707963, 1.5707963, nan, nan, M_PI]
+    sigma = 0.5
+    coupledRxnLabel = autoP
+    observeLabel = pip2
+
+    # KIN autoPhosphorylation #
+    pip2(head~U) -> pip2(head~P)
+    rate = 0.0
+    rxnLabel = autoP
+
+    ### KIN - AP2 ### 
+    kin(ap) + ap2(sy,m2muh!*) <-> kin(ap!1).ap2(sy!1,m2muh!*)
+    onRate3Dka = 83.56969488262132  #ka3
+    offRatekb = 404.429988965815 #kb3
+    sigma = 0.5
+    assocAngles = [1.5707963, 2.35619, nan, M_PI, M_PI]
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]
+    
+    ### SYN - PIP2 ###
+    syn(pi) + pip2(head~P) <-> syn(pi!1).pip2(head~P!1)
+    onRate3Dka = 83.02695335869234  #ka7
+    offRatekb = 215.28218331582465 #kb7
+    kcat = 86.26697148902944 #kcat7
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]
+    assocAngles = [1.5707963, 1.5707963, nan, nan, M_PI]
+    sigma = 0.5
+    coupledRxnLabel = autoU
+    observeLabel = pip
+
+    # SYN autoDephosphorylation #
+    pip2(head~P) -> pip2(head~U)
+    rate = 0.0
+    rxnLabel = autoU
+
+    ### SYN - AP2 ### 
+    syn(ap) + ap2(sy,m2muh!*) <-> syn(ap!1).ap2(sy!1,m2muh!*)
+    onRate3Dka = 20.625923597321727  #ka4
+    offRatekb = 5.028509337394684 #kb4
+    sigma = 0.5
+    assocAngles = [1.5707963, 2.35619, nan, M_PI, M_PI]
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]	
+
+end reactions
