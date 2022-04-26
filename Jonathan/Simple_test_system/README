@@ -1,0 +1,15 @@
+Simple system of just L + K <-> LK -> Lp + K
+
+changed diffusion of pip2 to 10 from 1, because ODE equilibrium was reached much sooner compared to NERDSS
+
+changed rates to be much slower and increased K from 7 to 70 because the plot was very spiky with low copy number
+
+
+#### 4/19 ######
+changed forward rate converter to simply divide by 0.6022
+
+Got agreement, but NERDSS reaches equilibrium 4x faster than ODEs. Diffusion back to 1?
+Changed pip diffusion back to 1. Will be done tmo 
+
+#### 4/20 ####
+equilibrium agrees, kinetics slightly off 

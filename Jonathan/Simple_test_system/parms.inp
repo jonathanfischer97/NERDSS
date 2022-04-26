@@ -1,0 +1,51 @@
+# Input file
+
+##'ka1': 0.03791999300713553, 'kb1': 97.82403936369272, 'kcat1': 277.346311110198,
+# 'ka2': 0.7163743434133126, 'kb2': 32.47470589751822, 'ka3': 7.559407489840667, 'kb3': 223.36133248956713, 
+# 'ka4': 0.8199153260341503, 'kb4': 1.8864353860273186, 'ka7': 0.9946959796263228, 'kb7': 90.04601085463732, 
+# 'kcat7': 70.73363511534804, 'V': 0.07994067550020652, 'VA': 1.5, 'sigma': 0.001, 'L': 87.30083542079618, 
+# 'Lp': 0.0, 'K': 7.111613238604031, 'P': 5.451528942232038, 'LK': 0.0, 'A': 10, 'LpA': 0.0, 'LpAK': 0.0, 
+# 'LpAP': 0.0, 'LpAPLp': 0.0, 'LpAKL': 0.0, 'LpP': 0.0
+
+##Waterbox dimensions
+##['x: 231', 'y: 231','z: 1500']
+
+start parameters
+    nItr = 100000000
+    timeStep = 1
+    timeWrite = 500
+    trajWrite = 1000000000
+    restartWrite = 100000000
+    checkPoint = 100000000
+    pdbWrite = 100000000
+end parameters
+
+start boundaries
+     WaterBox = [231,231,1500]  #nm
+end boundaries
+
+start molecules
+    pip2 : 723 (head~U)
+    kin : 337 
+end molecules
+
+start reactions
+
+    ### KIN - PIP2 ###
+    kin(pi) + pip2(head~U) <-> kin(pi!1).pip2(head~U!1)
+    onRate3Dka = 0.06296910163921543  #ka1
+    offRatekb = 700.82403936369272 #s-1  #kb1
+    kcat = 2.346311110198 #kcat1
+    norm1 = [0,0,1]
+    norm2 = [0,0,1]
+    assocAngles = [1.5707963, 1.5707963, nan, nan, M_PI]
+    sigma = 0.5
+    coupledRxnLabel = autoP
+    observeLabel = pip2
+
+    # KIN autoPhosphorylation #
+    pip2(head~U) -> pip2(head~P)
+    rate = 0.0
+    rxnLabel = autoP
+
+end reactions
