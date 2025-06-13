@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gsl/gsl_rng.h"
+#include <gsl/gsl_randist.h>
 
 extern gsl_rng* r;
 extern long long randNum;
@@ -10,6 +11,7 @@ extern long long randNum;
  * \param[out] double Uniformly distributed random double.
  */
 double rand_gsl();
+double rand_gsl64();
 
 /*!
  * \brief Initializes the GSL random number generator.
@@ -23,6 +25,7 @@ void srand_gsl(int);
  * numbers as a continuous run would.
  */
 void read_rng_state();
+void read_rng_state(int rank);
 
 /*!
  * \brief Wrapper for the internal GSL RNG state write function.
@@ -30,6 +33,7 @@ void read_rng_state();
  * Writes the current state of the RNG to a binary file.
  */
 void write_rng_state();
+void write_rng_state(int rank);
 
 /*!
  * \brief Wrapper for the internal GSL RNG state write function.

@@ -12,7 +12,7 @@
 #include "boundary_conditions/reflect_functions.hpp"
 #include "tracing.hpp"
 
-void reflect_complex_rad_rot_sphere(const Membrane& membraneObject, Complex& targCom, std::vector<Molecule>& moleculeList, double RS3Dinput)
+void reflect_complex_rad_rot_sphere(const Membrane& membraneObject, Complex& targCom, std::vector<Molecule>& moleculeList, double radius, double RS3Dinput)
 {
     // TRACE();
     // only works for the complex after association or diffusion, spherical system
@@ -20,10 +20,10 @@ void reflect_complex_rad_rot_sphere(const Membrane& membraneObject, Complex& tar
 
     // declare the boundary
     double sphereR;
-    if (targCom.D.z < 1E-8) {
+    if (targCom.OnSurface){
         sphereR = membraneObject.sphereR;
     } else {
-        sphereR = membraneObject.sphereR - RS3Dinput;
+        sphereR = radius - RS3Dinput;
     }
 
     Coord curr = targCom.comCoord;

@@ -102,17 +102,21 @@ void perform_bimolecular_state_change_box(int stateChangeIface, int facilitatorI
         } else {
             sigma.calc_magnitude();
             displaceFrac = (sigma.magnitude - bindRadius) / sigma.magnitude;
-            if (stateChangeCom.D.z < tol || facilitatorCom.D.z < tol) {
-	      transitionToSurface = true; //both can't be less than tol, or would not be in this loop.
-	      if (stateChangeCom.D.z < facilitatorCom.D.z) {
+            // if (stateChangeCom.D.z < tol || facilitatorCom.D.z < tol) {
+            if (stateChangeCom.OnSurface || facilitatorCom.OnSurface) {
+              transitionToSurface = true; // both can't be less than tol, or
+                                          // would not be in this loop.
+              if (stateChangeCom.D.z < facilitatorCom.D.z) {
                 slowPro = stateChangeMol.index;
-                memProtein = stateChangeMol; //rotate relative to the slower protein.
-	      } else {
+                memProtein =
+                    stateChangeMol; // rotate relative to the slower protein.
+              } else {
                 slowPro = facilitatorMol.index;
                 memProtein = facilitatorMol;
-	      }
-	      
-	      // std::cout << "TRANSITIONING FROM 3D->2D " << std::endl;
+
+              }
+
+              // std::cout << "TRANSITIONING FROM 3D->2D " << std::endl;
             }
         }
 
@@ -316,14 +320,14 @@ void perform_bimolecular_state_change_box(int stateChangeIface, int facilitatorI
         traj[mm] = 0;
 
     /*This needs to evaluate the traj update, based on it initially being zero.
-	  And here, it should be called based on the tmpCoords, not the full coordinates. 
+	  And here, it should be called based on the tmpCoords, not the full coordinates.
 	  also requires updating the COM of this temporary new position
 	*/
     update_complex_tmp_com_crds(facilitatorCom, moleculeList);
     update_complex_tmp_com_crds(stateChangeCom, moleculeList);
 
-    reflect_traj_tmp_crds(params, moleculeList, facilitatorCom, traj, membraneObject, 0.0); //uses tmpCoords to calculate traj.
-    reflect_traj_tmp_crds(params, moleculeList, stateChangeCom, traj, membraneObject, 0.0);
+    reflect_traj_tmp_crds(params, moleculeList, facilitatorCom, traj, membraneObject, 0.0, false); //uses tmpCoords to calculate traj.
+    reflect_traj_tmp_crds(params, moleculeList, stateChangeCom, traj, membraneObject, 0.0, false);
 
     if (std::abs(traj[0] + traj[1] + traj[2]) > 1E-15) {
         // update the temporary coordinates for both complexes
@@ -379,7 +383,7 @@ void perform_bimolecular_state_change_box(int stateChangeIface, int facilitatorI
     stateChangeCom.update_properties(moleculeList, molTemplateList);
 
     // Enforce boundary conditions
-    reflect_complex_rad_rot(membraneObject, facilitatorCom, moleculeList, 0.0);
+    reflect_complex_rad_rot(membraneObject, facilitatorCom, moleculeList, 0.0, false);
 
     for (unsigned crossItr { 0 }; crossItr < stateChangeMol.crossbase.size(); ++crossItr) {
         int skipMol { stateChangeMol.crossbase[crossItr] };

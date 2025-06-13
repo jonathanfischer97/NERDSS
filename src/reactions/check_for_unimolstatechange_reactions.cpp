@@ -12,8 +12,8 @@ void check_for_unimolstatechange_reactions(unsigned simItr, Parameters& params, 
 {
     for (unsigned molItr { 0 }; molItr < moleculeList.size(); ++molItr) {
         // only do checks if the Molecule exists
-        if (moleculeList[molItr].isEmpty)
-            continue;
+        if (moleculeList[molItr].isEmpty) continue;
+        if (moleculeList[molItr].isGhosted) continue;
 
         //check for state changes
         if (params.hasUniMolStateChange == true) {
@@ -45,7 +45,7 @@ void check_for_unimolstatechange_reactions(unsigned simItr, Parameters& params, 
                                         // make sure that the time step is resonable according to the prob of reaction
                                         if (prob > 1.000001) {
                                             std::cerr << "Error: prob of reaction > 1. Avoid this using a smaller time step." << std::endl;
-                                            exit(1);
+                                            //exit(1);
                                         }
                                         if (prob > 0.5) {
                                             // std::cout << "WARNING: prob of reaction > 0.5. If this is a reaction for a bimolecular binding with multiple binding sites, please use a smaller time step." << std::endl;
@@ -129,7 +129,7 @@ void check_for_unimolstatechange_reactions(unsigned simItr, Parameters& params, 
                                     // make sure that the time step is resonable according to the prob of reaction
                                     if (prob > 1.000001) {
                                         std::cerr << "Error: prob of reaction > 1. Avoid this using a smaller time step." << std::endl;
-                                        exit(1);
+                                        //exit(1);
                                     }
                                     if (prob > 0.5) {
                                         // std::cout << "WARNING: prob of reaction > 0.5. If this is a reaction for a bimolecular binding with multiple binding sites, please use a smaller time step." << std::endl;

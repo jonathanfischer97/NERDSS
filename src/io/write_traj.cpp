@@ -13,7 +13,7 @@ void write_traj(long long int iter, std::ofstream& trajFile, const Parameters& p
     std::string chain { "ABCDEFGHIJKLMNOPQRSTUVWXYZ" };
     std::vector<std::string> molTypeNames;
     for (auto& molTemp : molTemplateList)
-        molTypeNames.push_back(molTemp.molName.substr(0, 2));
+        molTypeNames.push_back(molTemp.molName.substr(0, 4));
 
     trajFile << params.numTotalUnits << '\n';
     trajFile << "iteration: " << iter << std::endl;
@@ -31,11 +31,12 @@ void write_traj(long long int iter, std::ofstream& trajFile, const Parameters& p
             trajFile << std::flush;
         }
     }
-
+    /*
     while (numWritten < params.numTotalUnits) {
         trajFile << std::setw(4) << "EMTY" << ' ' << std::fixed << membraneObject.waterBox.x / 2.0 << std::fixed
                  << membraneObject.waterBox.y / 2.0 << std::fixed << membraneObject.waterBox.z / 2.0 << '\n';
         ++numWritten;
         trajFile << std::flush;
     }
+    */
 }

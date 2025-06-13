@@ -60,14 +60,18 @@ void sweep_separation_complex_rot_box(int simItr, int pro1Index, Parameters& par
     //determine RS3Dinput
     double RS3Dinput { 0.0 };
     Complex targCom { complexList[com1Index] };
-    for (auto& molIndex : targCom.memberList) {
+    if(membraneObject.implicitLipid){
+      for (auto& molIndex : targCom.memberList) {
         for (int RS3Dindex = 0; RS3Dindex < 100; RS3Dindex++) {
-            if (std::abs(membraneObject.RS3Dvect[RS3Dindex + 400] - moleculeList[molIndex].molTypeIndex) < 1E-2) {
-                RS3Dinput = membraneObject.RS3Dvect[RS3Dindex + 300];
-                break;
-            }
+	  if (std::abs(membraneObject.RS3Dvect[RS3Dindex + 400] - moleculeList[molIndex].molTypeIndex) < 1E-2) {
+	    RS3Dinput = membraneObject.RS3Dvect[RS3Dindex + 300];
+	    break;
+	  }
         }
+      }
     }
+    int index = moleculeList[pro1Index].molTypeIndex;
+    bool isInsideCompartment = molTemplateList[index].insideCompartment;
 
     int tsave = 0;
     // if (reflectList[com1Index] == 0) {
@@ -154,7 +158,7 @@ void sweep_separation_complex_rot_box(int simItr, int pro1Index, Parameters& par
             complexList[com1Index].trajRot.z = sqrt(2.0 * params.timeStep * complexList[com1Index].Dr.z) * GaussV();
 
             // reflectList[com1Index] = 0;
-            reflect_traj_complex_rad_rot(params, moleculeList, complexList[com1Index], membraneObject, RS3Dinput);
+            reflect_traj_complex_rad_rot(params, moleculeList, complexList[com1Index], membraneObject, RS3Dinput, isInsideCompartment);
             // reflectList[com1Index] = 1;
 
             int resampleList[complexList.size()]; // if this is 0, we need resample
@@ -165,6 +169,8 @@ void sweep_separation_complex_rot_box(int simItr, int pro1Index, Parameters& par
             for (int checkMolItr { 0 }; checkMolItr < numOverlap; checkMolItr++) {
                 int p2 { overlapList[checkMolItr] };
                 com2Index = moleculeList[p2].myComIndex;
+
+                
                 if (resampleList[com2Index] == 0) {
                     if (moleculeList[p2].trajStatus == TrajStatus::none || moleculeList[p2].trajStatus == TrajStatus::canBeResampled) {
                         /*
@@ -182,7 +188,7 @@ void sweep_separation_complex_rot_box(int simItr, int pro1Index, Parameters& par
                         complexList[com2Index].trajRot.y = sqrt(2.0 * params.timeStep * complexList[com2Index].Dr.y) * GaussV();
                         complexList[com2Index].trajRot.z = sqrt(2.0 * params.timeStep * complexList[com2Index].Dr.z) * GaussV();
                         // reflectList[com2Index] = 0;
-                        reflect_traj_complex_rad_rot(params, moleculeList, complexList[com2Index], membraneObject, RS3Dinput);
+                        reflect_traj_complex_rad_rot(params, moleculeList, complexList[com2Index], membraneObject, RS3Dinput, isInsideCompartment);
                         // reflectList[com2Index] = 1;
                         resampleList[com2Index] = 1;
                     }
@@ -194,41 +200,41 @@ void sweep_separation_complex_rot_box(int simItr, int pro1Index, Parameters& par
             itr = maxItr; // break from loop
         }
 
-        if (itr == maxItr - 1) {
-            if (com1Index != com2Index) {
-                // std::cout << " WARNING ***************************************************** " << '\n';
-                // std::cout << "can't solve overlap: " << pro1Index
-                //           << " max cross: " << moleculeList[pro1Index].crossbase.size() << " n overlap: " << tsave
-                //           << " pro1: " << overlapList[0] << " D: " << complexList[com1Index].D.x << " "
-                //           << complexList[com2Index].D.x << " Last separation: " << sqrt(dr2) << '\n';
+        // if (itr == maxItr - 1) {
+        //     if (com1Index != com2Index) {
+        //         // std::cout << " WARNING ***************************************************** " << '\n';
+        //         // std::cout << "can't solve overlap: " << pro1Index
+        //         //           << " max cross: " << moleculeList[pro1Index].crossbase.size() << " n overlap: " << tsave
+        //         //           << " pro1: " << overlapList[0] << " D: " << complexList[com1Index].D.x << " "
+        //         //           << complexList[com2Index].D.x << " Last separation: " << sqrt(dr2) << '\n';
 
-                // write_crds_complex(com1Index, ind_com, bases);
-                // write_crds_complex(com2Index, ind_com, bases);
-                for (int memMolItr { 0 }; memMolItr < com1Size; ++memMolItr) {
-                    pro1Index = complexList[com1Index].memberList[memMolItr];
-                    // std::cout << "p1: " << pro1Index << ' ' << " nfree and com; "
-                    //           << moleculeList[pro1Index].freelist.size() << ' ' << moleculeList[pro1Index].comCoord
-                    //           << '\t';
-                    // std::cout << "traj 1: " << ' ' << complexList[com2Index].trajTrans << '\n';
-                    for (int crossMolItr { 0 }; crossMolItr < moleculeList[pro1Index].crossbase.size(); ++crossMolItr) {
-                        int pro2Index { moleculeList[pro1Index].crossbase[crossMolItr] };
-                        com2Index = moleculeList[pro2Index].myComIndex;
-                        int relIface1 { moleculeList[pro1Index].mycrossint[crossMolItr] };
-                        int relIface2 { ifaceList[maxRows * memMolItr + crossMolItr] };
-                        // std::cout << "cross num: " << crossMolItr << " relIface1: " << relIface1
-                        //           << " relIface2: " << relIface2 << " pro: " << pro2Index << ' ' << " nfree; "
-                        //           << moleculeList[pro2Index].freelist.size() << ' ' << moleculeList[pro2Index].comCoord
-                        //           << '\t';
-                        // std::cout << "traj: " << ' ' << complexList[com2Index].trajTrans << '\n';
-                    }
-                }
-            } else {
-                // std::cout << "Reached max iterations in sweep without solving overlap, but proteins are "
-                //              "within the same complex. Last separation: "
-                //           << sqrt(dr2) << '\n';
-            }
-            // exit(1);
-        }
+        //         // write_crds_complex(com1Index, ind_com, bases);
+        //         // write_crds_complex(com2Index, ind_com, bases);
+        //         for (int memMolItr { 0 }; memMolItr < com1Size; ++memMolItr) {
+        //             pro1Index = complexList[com1Index].memberList[memMolItr];
+        //             // std::cout << "p1: " << pro1Index << ' ' << " nfree and com; "
+        //             //           << moleculeList[pro1Index].freelist.size() << ' ' << moleculeList[pro1Index].comCoord
+        //             //           << '\t';
+        //             // std::cout << "traj 1: " << ' ' << complexList[com2Index].trajTrans << '\n';
+        //             for (int crossMolItr { 0 }; crossMolItr < moleculeList[pro1Index].crossbase.size(); ++crossMolItr) {
+        //                 int pro2Index { moleculeList[pro1Index].crossbase[crossMolItr] };
+        //                 com2Index = moleculeList[pro2Index].myComIndex;
+        //                 int relIface1 { moleculeList[pro1Index].mycrossint[crossMolItr] };
+        //                 int relIface2 { ifaceList[maxRows * memMolItr + crossMolItr] };
+        //                 // std::cout << "cross num: " << crossMolItr << " relIface1: " << relIface1
+        //                 //           << " relIface2: " << relIface2 << " pro: " << pro2Index << ' ' << " nfree; "
+        //                 //           << moleculeList[pro2Index].freelist.size() << ' ' << moleculeList[pro2Index].comCoord
+        //                 //           << '\t';
+        //                 // std::cout << "traj: " << ' ' << complexList[com2Index].trajTrans << '\n';
+        //             }
+        //         }
+        //     } else {
+        //         // std::cout << "Reached max iterations in sweep without solving overlap, but proteins are "
+        //         //              "within the same complex. Last separation: "
+        //         //           << sqrt(dr2) << '\n';
+        //     }
+        //     // exit(1);
+        // }
 
     } // end maximum iterations
 

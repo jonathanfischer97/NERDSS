@@ -8,14 +8,14 @@
 #include <cmath>
 #include <iomanip>
 
-void associate_sphere(long long int iter, 
+void associate_sphere(long long int iter,
     int ifaceIndex1, int ifaceIndex2, Molecule& reactMol1, Molecule& reactMol2,
     Complex& reactCom1, Complex& reactCom2, const Parameters& params,
     ForwardRxn& currRxn, std::vector<Molecule>& moleculeList,
     std::vector<MolTemplate>& molTemplateList, std::map<std::string, int>& observablesList,
     copyCounters& counterArrays, std::vector<Complex>& complexList,
     Membrane& membraneObject, const std::vector<ForwardRxn>& forwardRxns,
-    const std::vector<BackRxn>& backRxns)
+    const std::vector<BackRxn>& backRxns, std::ofstream& assocDissocFile)
 {
     // TRACE();
     if (reactCom1.index == reactCom2.index) {
@@ -25,7 +25,7 @@ void associate_sphere(long long int iter,
         // update the Molecule's TrajStatus (this is done in the else, when
         // Molecules are rotated but not otherwise)
         for (auto& memMol : reactCom1.memberList)
-            moleculeList[memMol].trajStatus = TrajStatus::associated;
+            moleculeList[memMol].trajStatus = TrajStatus::propagated;
     } else { // not in the same complex
         if (reactMol2.isImplicitLipid == true || reactMol1.isImplicitLipid == true) {
             std::cout << "WRONG: implicit-lipid binding involves wrong function file. associate_ImplicitLipid_sphere should be called instead of associate_sphere!" << std::endl;
@@ -37,7 +37,7 @@ void associate_sphere(long long int iter,
         std::vector<long long int> lastNumberUpdateItrEachMolPrevious1 {};
         std::vector<int> numEachMolPrevious2 {};
         std::vector<long long int> lastNumberUpdateItrEachMolPrevious2 {};
-        for(unsigned index=0;index<molTemplateList.size();index++){
+        for (unsigned index = 0; index < molTemplateList.size(); index++) {
             numEachMolPrevious1.emplace_back(complexList[reactMol1.myComIndex].numEachMol[index]);
             lastNumberUpdateItrEachMolPrevious1.emplace_back(complexList[reactMol1.myComIndex].lastNumberUpdateItrEachMol[index]);
             numEachMolPrevious2.emplace_back(complexList[reactMol2.myComIndex].numEachMol[index]);
@@ -79,7 +79,8 @@ void associate_sphere(long long int iter,
             double arc1Move, arc2Move;
             double sigmaMag;
             // if both in 2D, ignore the z-component
-            if (DzSum < 1E-14) {
+            // if (DzSum < 1E-14) {
+            if (reactCom1.OnSurface && reactCom2.OnSurface) {
                 isOnMembrane = true;
                 currRxn.bindRadius2D = calc_bindRadius2D(currRxn.bindRadius, reactIface1);
                 DzSum = 1; // to prevent divide by 0
@@ -91,7 +92,8 @@ void associate_sphere(long long int iter,
                 sigmaMag = sqrt((sigma.x * sigma.x) + (sigma.y * sigma.y) + (sigma.z * sigma.z));
                 displaceFrac = (sigmaMag - currRxn.bindRadius) / sigmaMag;
                 /*At least one protein is in 3D*/
-                if (reactCom1.D.z < tol || reactCom2.D.z < tol) {
+                // if (reactCom1.D.z < tol || reactCom2.D.z < tol) {
+                if (reactCom1.OnSurface || reactCom2.OnSurface) {
                     transitionToSurface = true; // both can't be less than tol, or would not be in this loop.
                     // std::cout << "TRANSITIONING FROM 3D->2D " << std::endl;
                 }
@@ -103,12 +105,14 @@ void associate_sphere(long long int iter,
             if (isOnMembrane == true) { // both complexes are on the sphere
                 target1Pos = find_position_after_association(arc1Move, reactIface1, reactIface2, sigmaMag, currRxn.bindRadius2D);
                 target2Pos = find_position_after_association(arc2Move, reactIface2, reactIface1, sigmaMag, currRxn.bindRadius2D);
-            } else if (reactCom1.D.z < 1E-14) { //complex1 is on sphere
+            // } else if (reactCom1.D.z < 1E-14) { //complex1 is on sphere
+            } else if (reactCom1.OnSurface) { //complex1 is on sphere
                 transVec1 = Vector(0, 0, 0);
                 sigma.calc_magnitude();
                 double lamda = (sigma.magnitude - currRxn.bindRadius) / sigma.magnitude;
                 transVec2 = Vector(lamda * sigma);
-            } else if (reactCom2.D.z < 1E-14) { //complex2 is on sphere
+            // } else if (reactCom2.D.z < 1E-14) { //complex2 is on sphere
+            } else if (reactCom2.OnSurface) { //complex2 is on sphere
                 transVec2 = Vector(0, 0, 0);
                 sigma.calc_magnitude();
                 double lamda = (sigma.magnitude - currRxn.bindRadius) / sigma.magnitude;
@@ -337,8 +341,8 @@ void associate_sphere(long long int iter,
         update_complex_tmp_com_crds(reactCom1, moleculeList);
         update_complex_tmp_com_crds(reactCom2, moleculeList);
 
-        reflect_traj_tmp_crds(params, moleculeList, reactCom1, traj, membraneObject, 0.0); // uses tmpCoords to calculate traj.
-        reflect_traj_tmp_crds(params, moleculeList, reactCom2, traj, membraneObject, 0.0);
+        reflect_traj_tmp_crds(params, moleculeList, reactCom1, traj, membraneObject, 0.0, false); // uses tmpCoords to calculate traj.
+        reflect_traj_tmp_crds(params, moleculeList, reactCom2, traj, membraneObject, 0.0, false);
 
         if (std::abs(traj[0] + traj[1] + traj[2]) > 1E-15) {
             // update the temporary coordinates for both complexes
@@ -364,7 +368,7 @@ void associate_sphere(long long int iter,
         check_for_structure_overlap(cancelAssoc, reactCom1, reactCom2, moleculeList, params, molTemplateList);
 
         if (cancelAssoc == false) {
-            check_if_spans_sphere(cancelAssoc, params, reactCom1, reactCom2, moleculeList, membraneObject);
+            check_if_spans_sphere(cancelAssoc, params, reactCom1, reactCom2, moleculeList, membraneObject, membraneObject.sphereR);
             if (cancelAssoc == true)
                 counterArrays.nCancelSpanBox++;
         } else
@@ -429,10 +433,11 @@ void associate_sphere(long long int iter,
         // update complexes
 
         // add lifetime to the previous small clusters
-        for(unsigned index=0;index<molTemplateList.size();index++){
-            if(molTemplateList[index].countTransition == true){
+        for (unsigned index = 0; index < molTemplateList.size(); index++) {
+            if (molTemplateList[index].countTransition == true) {
                 // com2 destroty
-                molTemplateList[index].lifeTime[numEachMolPrevious2[index]-1].emplace_back((iter-lastNumberUpdateItrEachMolPrevious2[index])*Parameters::dt/1E6);
+                if (numEachMolPrevious2[index] - 1 >= 0)
+                    molTemplateList[index].lifeTime[numEachMolPrevious2[index] - 1].emplace_back((iter - lastNumberUpdateItrEachMolPrevious2[index]) * Parameters::dt / 1E6);
             }
         }
 
@@ -440,33 +445,35 @@ void associate_sphere(long long int iter,
         reactCom2.destroy(moleculeList, complexList); // destroy the complex
         reactCom1.update_properties(moleculeList, molTemplateList); // recalculate the properties of the first complex
 
-        for(unsigned index=0;index<molTemplateList.size();index++){
-            if(molTemplateList[index].countTransition == true && complexList[reactMol1.myComIndex].numEachMol[index]>numEachMolPrevious1[index]){
+        for (unsigned index = 0; index < molTemplateList.size(); index++) {
+            if (molTemplateList[index].countTransition == true && complexList[reactMol1.myComIndex].numEachMol[index] > numEachMolPrevious1[index]) {
                 // grow
-                molTemplateList[index].lifeTime[numEachMolPrevious1[index]-1].emplace_back((iter-lastNumberUpdateItrEachMolPrevious1[index])*Parameters::dt/1E6);
-                complexList[reactMol1.myComIndex].lastNumberUpdateItrEachMol[index]=iter;
+                if (numEachMolPrevious1[index] - 1 >= 0) {
+                    molTemplateList[index].lifeTime[numEachMolPrevious1[index] - 1].emplace_back((iter - lastNumberUpdateItrEachMolPrevious1[index]) * Parameters::dt / 1E6);
+                    complexList[reactMol1.myComIndex].lastNumberUpdateItrEachMol[index] = iter;
+                }
             }
         }
 
         // update transition matrix
         // compare current cluster size with the previous ones
-        for(unsigned index=0;index<molTemplateList.size();index++){
-            if(molTemplateList[index].countTransition == true && complexList[reactMol1.myComIndex].numEachMol[index]>numEachMolPrevious1[index]){
+        for (unsigned index = 0; index < molTemplateList.size(); index++) {
+            if (molTemplateList[index].countTransition == true && complexList[reactMol1.myComIndex].numEachMol[index] > numEachMolPrevious1[index]) {
                 // grow
-                if(numEachMolPrevious1[index]-1 >= 0)
-                    molTemplateList[index].transitionMatrix[numEachMolPrevious1[index]-1][numEachMolPrevious1[index]-1] += iter-Parameters::lastUpdateTransition[index]-1;
-                if(numEachMolPrevious2[index]-1 >= 0)
-                    molTemplateList[index].transitionMatrix[numEachMolPrevious2[index]-1][numEachMolPrevious2[index]-1] += iter-Parameters::lastUpdateTransition[index]-1;
-                if(complexList[reactMol1.myComIndex].numEachMol[index]-1 >= 0 && numEachMolPrevious1[index]-1 >= 0)
-                    molTemplateList[index].transitionMatrix[complexList[reactMol1.myComIndex].numEachMol[index]-1][numEachMolPrevious1[index]-1] += 1;
-                if(complexList[reactMol1.myComIndex].numEachMol[index]-1 >= 0 && numEachMolPrevious2[index]-1 >= 0)
-                    molTemplateList[index].transitionMatrix[complexList[reactMol1.myComIndex].numEachMol[index]-1][numEachMolPrevious2[index]-1] += 1;
+                if (numEachMolPrevious1[index] - 1 >= 0)
+                    molTemplateList[index].transitionMatrix[numEachMolPrevious1[index] - 1][numEachMolPrevious1[index] - 1] += iter - Parameters::lastUpdateTransition[index] - 1;
+                if (numEachMolPrevious2[index] - 1 >= 0)
+                    molTemplateList[index].transitionMatrix[numEachMolPrevious2[index] - 1][numEachMolPrevious2[index] - 1] += iter - Parameters::lastUpdateTransition[index] - 1;
+                if (complexList[reactMol1.myComIndex].numEachMol[index] - 1 >= 0 && numEachMolPrevious1[index] - 1 >= 0)
+                    molTemplateList[index].transitionMatrix[complexList[reactMol1.myComIndex].numEachMol[index] - 1][numEachMolPrevious1[index] - 1] += 1;
+                if (complexList[reactMol1.myComIndex].numEachMol[index] - 1 >= 0 && numEachMolPrevious2[index] - 1 >= 0)
+                    molTemplateList[index].transitionMatrix[complexList[reactMol1.myComIndex].numEachMol[index] - 1][numEachMolPrevious2[index] - 1] += 1;
 
                 // update diagonal elements for unchanged complexes
-                for(unsigned indexCom=0;indexCom<complexList.size();indexCom++){
-                    if(indexCom != reactMol1.myComIndex){
-                        if(complexList[indexCom].numEachMol[index]-1 >= 0){
-                            molTemplateList[index].transitionMatrix[complexList[indexCom].numEachMol[index]-1][complexList[indexCom].numEachMol[index]-1] += iter-Parameters::lastUpdateTransition[index];
+                for (unsigned indexCom = 0; indexCom < complexList.size(); indexCom++) {
+                    if (indexCom != reactMol1.myComIndex) {
+                        if (complexList[indexCom].numEachMol[index] - 1 >= 0) {
+                            molTemplateList[index].transitionMatrix[complexList[indexCom].numEachMol[index] - 1][complexList[indexCom].numEachMol[index] - 1] += iter - Parameters::lastUpdateTransition[index];
                         }
                     }
                 }
@@ -477,7 +484,7 @@ void associate_sphere(long long int iter,
         }
 
         // Enforce boundary conditions
-        reflect_complex_rad_rot(membraneObject, reactCom1, moleculeList, 0.0);
+        reflect_complex_rad_rot(membraneObject, reactCom1, moleculeList, 0.0, false);
 
     } // end of if these molecules are closing a loop or not.
     //------------------------START UPDATE MONOMERLIST-------------------------
@@ -521,6 +528,11 @@ void associate_sphere(long long int iter,
     if (currRxn.isReversible) {
         reactMol1.interfaceList[ifaceIndex1].interaction.conjBackRxn = currRxn.conjBackRxnIndex;
         reactMol2.interfaceList[ifaceIndex2].interaction.conjBackRxn = currRxn.conjBackRxnIndex;
+    }
+    if (assocDissocFile.is_open()) {
+        assocDissocFile << "ITR:" << iter << "," << "BOND," 
+        << molTemplateList[reactMol1.molTypeIndex].molName << "," << reactMol1.index << "," << ifaceIndex1 << "," 
+        << molTemplateList[reactMol2.molTypeIndex].molName << "," << reactMol2.index << "," << ifaceIndex2 << std::endl;
     }
 
     reactMol1.interfaceList[ifaceIndex1].isBound = true;

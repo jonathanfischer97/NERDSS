@@ -60,16 +60,16 @@ void determine_2D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
     double sep {};
     double R1 {};
     bool withinRmax { get_distance(biMolData.pro1Index, biMolData.pro2Index, biMolData.relIface1, biMolData.relIface2,
-        rxnIndex, rateIndex, isStateChangeBackRxn, sep, R1, RMax, complexList, forwardRxns[rxnIndex], moleculeList, membraneObject) };
+        rxnIndex, rateIndex, isStateChangeBackRxn, sep, R1, RMax, complexList, forwardRxns[rxnIndex], moleculeList, membraneObject.isSphere) };
     if (withinRmax) {
         // in case they dissociated
         moleculeList[biMolData.pro1Index].probvec.push_back(0);
         moleculeList[biMolData.pro2Index].probvec.push_back(0);
     }
 
-    if (moleculeList[biMolData.pro1Index].trajStatus != TrajStatus::propagated
-        && moleculeList[biMolData.pro2Index].trajStatus != TrajStatus::propagated) {
-        /*This movestat check is if you allow just dissociated proteins to avoid
+    if (moleculeList[biMolData.pro1Index].isDissociated != true
+        && moleculeList[biMolData.pro2Index].isDissociated != true) {
+    /*This movestat check is if you allow just dissociated proteins to avoid
          * overlap*/
         if (withinRmax && forwardRxns[rxnIndex].rateList[rateIndex].rate > 0) {
             bool probValExists { false };
@@ -120,39 +120,39 @@ void determine_2D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
 
             double ratio = forwardRxns[rxnIndex].bindRadius / R1;
             if (sep < 0) {
-                if (biMolData.com1Index != biMolData.com2Index) {
-                    // && i1!=0 && i2!=0) {
-                    // std::cout << "*****************************************************\n"
-                    //           << " WARNING AT ITERATION " << simItr << "\n";
-                    // std::cout << "SEPARATION BETWEEN INTERFACE " << biMolData.relIface1 << " ON MOLECULE "
-                    //           << biMolData.pro1Index << " AND INTERFACE " << biMolData.relIface2 << " ON MOLECULE "
-                    //           << biMolData.pro2Index << " IS LESS THAN 0\n";
-                    // std::cout << "separation: " << sep << " r1: " << R1 << " p1: " << biMolData.pro1Index
-                    //           << " p2: " << biMolData.pro2Index << " it " << simItr << " i1: " << biMolData.absIface1
-                    //           << " i2: " << biMolData.absIface2 << '\n';
-                    // std::cout << "MOL1 COM: " << moleculeList[biMolData.pro1Index].comCoord
-                    //           << " freelist.size(): " << moleculeList[biMolData.pro1Index].freelist.size() << '\n';
-                    // std::cout << "IFACE1: "
-                    //           << moleculeList[biMolData.pro1Index].interfaceList[biMolData.relIface1].coord << '\n';
-                    // std::cout << "MOL2 COM: " << moleculeList[biMolData.pro2Index].comCoord
-                    //           << " freelist.size(): " << moleculeList[biMolData.pro2Index].freelist.size() << '\n';
-                    // std::cout << "IFACE2: "
-                    //           << moleculeList[biMolData.pro2Index].interfaceList[biMolData.relIface2].coord << '\n';
-                    // std::cout << "*****************************************************\n";
-                } else {
-                    // std::cout << " WARNING "
-                    //              "***************************************************** "
-                    //           << '\n';
-                    // std::cout << "Protein interfaces within a complex, trying to bind. "
-                    //              "Separation <0: "
-                    //           << sep << " r1 " << R1 << " p1: " << biMolData.pro1Index << " p2: " << biMolData.pro2Index
-                    //           << " it " << simItr << " i1: " << biMolData.absIface1 << " i2: " << biMolData.absIface2
-                    //           << '\n';
-                    // std::cout << "P1 COORDS: " << moleculeList[biMolData.pro1Index].comCoord
-                    //           << " freelist.size(): " << moleculeList[biMolData.pro1Index].freelist.size() << '\n';
-                    // std::cout << "P2 COORDS: " << moleculeList[biMolData.pro2Index].comCoord
-                    //           << " freelist.size(): " << moleculeList[biMolData.pro2Index].freelist.size() << '\n';
-                }
+                // if (biMolData.com1Index != biMolData.com2Index) {
+                //     // && i1!=0 && i2!=0) {
+                //     // std::cout << "*****************************************************\n"
+                //     //           << " WARNING AT ITERATION " << simItr << "\n";
+                //     // std::cout << "SEPARATION BETWEEN INTERFACE " << biMolData.relIface1 << " ON MOLECULE "
+                //     //           << biMolData.pro1Index << " AND INTERFACE " << biMolData.relIface2 << " ON MOLECULE "
+                //     //           << biMolData.pro2Index << " IS LESS THAN 0\n";
+                //     // std::cout << "separation: " << sep << " r1: " << R1 << " p1: " << biMolData.pro1Index
+                //     //           << " p2: " << biMolData.pro2Index << " it " << simItr << " i1: " << biMolData.absIface1
+                //     //           << " i2: " << biMolData.absIface2 << '\n';
+                //     // std::cout << "MOL1 COM: " << moleculeList[biMolData.pro1Index].comCoord
+                //     //           << " freelist.size(): " << moleculeList[biMolData.pro1Index].freelist.size() << '\n';
+                //     // std::cout << "IFACE1: "
+                //     //           << moleculeList[biMolData.pro1Index].interfaceList[biMolData.relIface1].coord << '\n';
+                //     // std::cout << "MOL2 COM: " << moleculeList[biMolData.pro2Index].comCoord
+                //     //           << " freelist.size(): " << moleculeList[biMolData.pro2Index].freelist.size() << '\n';
+                //     // std::cout << "IFACE2: "
+                //     //           << moleculeList[biMolData.pro2Index].interfaceList[biMolData.relIface2].coord << '\n';
+                //     // std::cout << "*****************************************************\n";
+                // } else {
+                //     // std::cout << " WARNING "
+                //     //              "***************************************************** "
+                //     //           << '\n';
+                //     // std::cout << "Protein interfaces within a complex, trying to bind. "
+                //     //              "Separation <0: "
+                //     //           << sep << " r1 " << R1 << " p1: " << biMolData.pro1Index << " p2: " << biMolData.pro2Index
+                //     //           << " it " << simItr << " i1: " << biMolData.absIface1 << " i2: " << biMolData.absIface2
+                //     //           << '\n';
+                //     // std::cout << "P1 COORDS: " << moleculeList[biMolData.pro1Index].comCoord
+                //     //           << " freelist.size(): " << moleculeList[biMolData.pro1Index].freelist.size() << '\n';
+                //     // std::cout << "P2 COORDS: " << moleculeList[biMolData.pro2Index].comCoord
+                //     //           << " freelist.size(): " << moleculeList[biMolData.pro2Index].freelist.size() << '\n';
+                // }
                 sep = 0;
                 ratio = 1;
                 R1 = forwardRxns[rxnIndex].bindRadius;
@@ -198,7 +198,7 @@ void determine_2D_bimolecular_reaction_probability(int simItr, int rxnIndex, int
             moleculeList[biMolData.pro2Index].probvec.back() = rxnProb * currnorm;
             if (rxnProb > 1.000001) {
                 std::cerr << "Error: prob of reaction is: " << rxnProb << " > 1. Avoid this using a smaller time step." << std::endl;
-                exit(1);
+                //exit(1);
             }
             if (rxnProb > 0.5) {
                 // std::cout << "WARNING: prob of reaction > 0.5. If this is a reaction for a bimolecular binding with multiple binding sites, please use a smaller time step." << std::endl;

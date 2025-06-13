@@ -50,7 +50,8 @@ void sweep_separation_complex_rot_memtest_box(int simItr, int pro1Index, Paramet
         for (int i { 0 }; i < moleculeList[pro1Index].crossbase.size(); ++i) {
             int p2 { moleculeList[pro1Index].crossbase[i] };
             int k2 { moleculeList[p2].myComIndex };
-            if (complexList[k2].D.z < 1E-15) {
+            // if (complexList[k2].D.z < 1E-15) {
+            if (complexList[k2].OnSurface) {
                 memCheckList[maxRows * c + i] = 1;
             } else
                 memCheckList[maxRows * c + i] = 0;
@@ -67,14 +68,19 @@ void sweep_separation_complex_rot_memtest_box(int simItr, int pro1Index, Paramet
     //determine RS3Dinput
     double RS3Dinput { 0.0 };
     Complex targCom { complexList[comIndex1] };
-    for (auto& molIndex : targCom.memberList) {
-        for (int RS3Dindex = 0; RS3Dindex < 100; RS3Dindex++) {
-            if (std::abs(membraneObject.RS3Dvect[RS3Dindex + 400] - moleculeList[molIndex].molTypeIndex) < 1E-2) {
-                RS3Dinput = membraneObject.RS3Dvect[RS3Dindex + 300];
-                break;
+    if(membraneObject.implicitLipid == true){
+        for (auto& molIndex : targCom.memberList) {
+            for (int RS3Dindex = 0; RS3Dindex < 100; RS3Dindex++) {
+                if (std::abs(membraneObject.RS3Dvect[RS3Dindex + 400] - moleculeList[molIndex].molTypeIndex) < 1E-2) {
+                    RS3Dinput = membraneObject.RS3Dvect[RS3Dindex + 300];
+                    break;
+                }
             }
         }
     }
+
+    int index = moleculeList[pro1Index].molTypeIndex;
+    bool isInsideCompartment = molTemplateList[index].insideCompartment;
 
     int tsave = 0;
     // if (reflectList[comIndex1] == 0) {
@@ -157,7 +163,7 @@ void sweep_separation_complex_rot_memtest_box(int simItr, int pro1Index, Paramet
             complexList[comIndex1].trajRot.z = sqrt(2.0 * params.timeStep * complexList[comIndex1].Dr.z) * GaussV();
 
             // reflectList[comIndex1] = 0;
-            reflect_traj_complex_rad_rot(params, moleculeList, complexList[comIndex1], membraneObject, RS3Dinput);
+            reflect_traj_complex_rad_rot(params, moleculeList, complexList[comIndex1], membraneObject, RS3Dinput, isInsideCompartment);
             // reflectList[comIndex1] = 1;
 
             int resampleList[complexList.size()]; // if this is 0, we need resample
@@ -171,7 +177,8 @@ void sweep_separation_complex_rot_memtest_box(int simItr, int pro1Index, Paramet
 
                 // avoid repeated resample
                 if (resampleList[comIndex2] == 0) {
-                    if (p2 > startProIndex && (moleculeList[p2].trajStatus == TrajStatus::none || moleculeList[p2].trajStatus == TrajStatus::canBeResampled)) {
+                    // if (p2 > startProIndex && (moleculeList[p2].trajStatus == TrajStatus::none || moleculeList[p2].trajStatus == TrajStatus::canBeResampled)) {
+                    if ((moleculeList[p2].trajStatus == TrajStatus::none || moleculeList[p2].trajStatus == TrajStatus::canBeResampled)) {
                         /*
                      We loop over proteins sequentially, so earlier proteins have already moved and avoided
                      their neighbors and should not be moved again.
@@ -188,7 +195,7 @@ void sweep_separation_complex_rot_memtest_box(int simItr, int pro1Index, Paramet
                         complexList[comIndex2].trajRot.z = sqrt(2.0 * params.timeStep * complexList[comIndex2].Dr.z) * GaussV();
 
                         // reflectList[comIndex2] = 0;
-                        reflect_traj_complex_rad_rot(params, moleculeList, complexList[comIndex2], membraneObject, RS3Dinput);
+                        reflect_traj_complex_rad_rot(params, moleculeList, complexList[comIndex2], membraneObject, RS3Dinput, isInsideCompartment);
                         // reflectList[comIndex2] = 1;
                         resampleList[comIndex2] = 1;
                     }

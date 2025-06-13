@@ -1,3 +1,4 @@
+#include "classes/class_Molecule_Complex.hpp"
 #include "reactions/association/association.hpp"
 #include "tracing.hpp"
 
@@ -13,14 +14,17 @@ void theta_rotation(Coord& reactIface1, Coord& reactIface2, Molecule& reactMol1,
         return;
     }
     sigma.calc_magnitude();
-
     double currTheta { sigma.dot_theta(v1) };
-    // std::cout << "Desired theta: " << targAngle << " Current theta: " << currTheta << std::endl;
+    //std::cout << "Desired theta: " << targAngle << " Current theta: " << currTheta << std::endl;
 
     // Determine if we even need to rotate (i.e. if the theta is already aligned )
     if (std::abs(targAngle - currTheta) < 1E-8) {
         // std::cout << "No theta rotation needed" << std::endl;
-    } else {
+    } else if ((areSameAngle(targAngle, M_PI) || areSameAngle(targAngle, 0)) &&
+             areSameAngle(currTheta, targAngle)) {
+        return;
+    } 
+    else {
 
         // if sigma and v1 are parallel, rotation axis can't be determined by the cross product
         // so we need to find an arbitrary vector orthogonal to either. Choose either x or y axis,
@@ -36,17 +40,39 @@ void theta_rotation(Coord& reactIface1, Coord& reactIface2, Molecule& reactMol1,
         // std::cout << "Positive half angle: " << rotAngPos << "\nNegative half angle: " << rotAngNeg << std::endl;
 
         // Create rotation quaternions
-        Quat rotQuatPos { cos(rotAngPos / 2), sin(rotAngPos / 2) * rotAxis.x, sin(rotAngPos / 2) * rotAxis.y,
-            sin(rotAngPos / 2) * rotAxis.z };
-        Quat rotQuatNeg { cos(rotAngNeg / 2), sin(rotAngNeg / 2) * rotAxis.x, sin(rotAngNeg / 2) * rotAxis.y,
-            sin(rotAngNeg / 2) * rotAxis.z };
+        Quat rotQuatPos{cos(rotAngPos / 2), 
+                        sin(rotAngPos / 2) * rotAxis.x,
+                        sin(rotAngPos / 2) * rotAxis.y,
+                        sin(rotAngPos / 2) * rotAxis.z};
+        Quat rotQuatNeg{cos(rotAngNeg / 2), 
+                        sin(rotAngNeg / 2) * rotAxis.x,
+                        sin(rotAngNeg / 2) * rotAxis.y,
+                        sin(rotAngNeg / 2) * rotAxis.z};
+
+        // if (reactMol1.index == 29 || reactMol2.index == 29) {
+        //   std::cout << "before uniform rotQuat" << std::endl;
+        //   std::cout << "rotQuatPos = " << rotQuatPos << std::endl;
+        //   std::cout << "rotQuatNeg = " << rotQuatNeg << std::endl;
+        // }
+
         // make them unit quaternions
         rotQuatPos = rotQuatPos.unit();
         rotQuatNeg = rotQuatNeg.unit();
 
+        // if (reactMol1.index == 29 || reactMol2.index == 29) {
+        //   std::cout << "before rotation for theta" << std::endl;
+        //   moleculeList[11].display_assoc_icoords("mol");
+        //   std::cout << "rotQuatPos = " << rotQuatPos << std::endl;
+        //   std::cout << "rotQuatNeg = " << rotQuatNeg << std::endl;
+        // }
         // rotate the molecules
         rotate(reactIface1, rotQuatPos, reactCom1, moleculeList);
         rotate(reactIface1, rotQuatNeg, reactCom2, moleculeList);
+
+        // if (reactMol1.index == 29 || reactMol2.index == 29) {
+        //   std::cout << "after rotation for theta" << std::endl;
+        //   moleculeList[11].display_assoc_icoords("mol");
+        // }
 
         v1 = Vector { reactIface1 - reactMol1.tmpComCoord };
         sigma = Vector { reactIface1 - reactIface2 };
@@ -56,9 +82,9 @@ void theta_rotation(Coord& reactIface1, Coord& reactIface2, Molecule& reactMol1,
 
         // if the angle between sigma and the rotated Molecule are correct, return.
         if ((areSameAngle(targAngle, M_PI) || areSameAngle(targAngle, 0)) && areSameAngle(currTheta, targAngle)) {
-            // std::cout << "Theta After: " << currTheta << std::endl;
+            //std::cout << "Theta After: " << currTheta << std::endl;
             return;
         }
-        // std::cout << "Theta After: " << currTheta << std::endl;
+        //std::cout << "Theta After: " << currTheta << std::endl;
     }
 }

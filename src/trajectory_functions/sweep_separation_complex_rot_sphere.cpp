@@ -113,7 +113,8 @@ void sweep_separation_complex_rot_sphere(int simItr, int pro1Index, Parameters& 
                     //     reflectList[com2Index] = 1;
                     // }
                     double dx2, dy2, dz2;
-                    if (complexList[com2Index].D.z < 1E-10) { // complex on sphere surface
+                    // if (complexList[com2Index].D.z < 1E-10) { // complex on sphere surface
+                    if (complexList[com2Index].OnSurface) { // complex on sphere surface
                         Coord ifacecrds = moleculeList[pro2Index].interfaceList[i2].coord;
                         Coord iface_final = calculate_update_position_interface(complexList[com2Index], ifacecrds);
                         dx2 = iface_final.x;
@@ -162,7 +163,7 @@ void sweep_separation_complex_rot_sphere(int simItr, int pro1Index, Parameters& 
             complexList[com1Index].trajRot.z = sqrt(2.0 * params.timeStep * complexList[com1Index].Dr.z) * GaussV();
 
             // reflectList[com1Index] = 0;
-            reflect_traj_complex_rad_rot(params, moleculeList, complexList[com1Index], membraneObject, RS3Dinput);
+            reflect_traj_complex_rad_rot(params, moleculeList, complexList[com1Index], membraneObject, RS3Dinput, false);
             // reflectList[com1Index] = 0;
 
             int resampleList[complexList.size()]; // if this is 0, we need resample
@@ -183,7 +184,8 @@ void sweep_separation_complex_rot_sphere(int simItr, int pro1Index, Parameters& 
                      */
 
                         /*If p2 just dissociated, also don'numOverlap try to move again*/
-                        if (complexList[com2Index].D.z < 1E-10) { // complex on sphere surface
+                        // if (complexList[com2Index].D.z < 1E-10) { // complex on sphere surface
+                        if (complexList[com2Index].OnSurface) { // complex on sphere surface
                             Coord targTrans = create_complex_propagation_vectors_on_sphere(params, complexList[com2Index]);
                             complexList[com2Index].trajTrans.x = targTrans.x;
                             complexList[com2Index].trajTrans.y = targTrans.y;
@@ -200,7 +202,7 @@ void sweep_separation_complex_rot_sphere(int simItr, int pro1Index, Parameters& 
                             complexList[com2Index].trajRot.z = sqrt(2.0 * params.timeStep * complexList[com2Index].Dr.z) * GaussV();
                         }
                         // reflectList[com2Index] = 0;
-                        reflect_traj_complex_rad_rot(params, moleculeList, complexList[com2Index], membraneObject, RS3Dinput);
+                        reflect_traj_complex_rad_rot(params, moleculeList, complexList[com2Index], membraneObject, RS3Dinput, false);
                         // reflectList[com2Index] = 1;
                         resampleList[com2Index] = 1;
                     }

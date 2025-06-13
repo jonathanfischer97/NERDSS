@@ -50,8 +50,24 @@ bool RxnIface::operator==(const Molecule::Iface& molIface) const
     //    return this->molTypeIndex == molIface.molTypeIndex && this->absIfaceIndex == molIface.index
     //        && this->requiresState == molIface.stateIden && this->requiresInteraction == molIface.isBound;
     // this can't check absIfaceIndex, since bound interfaces in the reactants can't have indexed bonds, yet
-    return this->molTypeIndex == molIface.molTypeIndex && this->relIfaceIndex == molIface.relIndex
-        && this->requiresState == molIface.stateIden && this->requiresInteraction == molIface.isBound;
+
+    if (this->molTypeIndex != molIface.molTypeIndex) {
+        return false;
+    }
+    if (this->relIfaceIndex != molIface.relIndex) {
+        return false;
+    }
+    if (this->requiresInteraction != molIface.isBound) {
+        return false;
+    }
+    if (this->requiresState != molIface.stateIden) {
+        return false;
+    }
+
+    return true;
+
+    //return this->molTypeIndex == molIface.molTypeIndex && this->relIfaceIndex == molIface.relIndex
+    //    && this->requiresState == molIface.stateIden && this->requiresInteraction == molIface.isBound;
 }
 
 /* FORWARDRXN */
@@ -70,6 +86,7 @@ ForwardRxn::ForwardRxn(ParsedRxn& parsedRxn, const std::vector<MolTemplate>& mol
     loopCoopFactor = parsedRxn.loopCoopFactor;
     irrevRingClosure = parsedRxn.irrevRingClosure;
     length3Dto2D = parsedRxn.length3Dto2D;
+    area3Dto1D = parsedRxn.area3Dto1D;
     rxnLabel = parsedRxn.rxnLabel;
     // set the product name for species output file headers
     productName = parsedRxn.productName;
@@ -204,6 +221,7 @@ void ForwardRxn::display() const
         std::cout << "bindRadSameCom " << bindRadSameCom << std::endl;
         std::cout << "loopCoopFactor " << loopCoopFactor << std::endl;
         std::cout << "length3Dto2D " << length3Dto2D << std::endl;
+        std::cout << "area3Dto1D " << area3Dto1D << std::endl;
         std::cout << "isCoupled? " << isCoupled << std::endl;
         if (isCoupled)
             std::cout << " coupledRxn Number: " << coupledRxn.absRxnIndex << " type: " << coupledRxn.rxnType << " prob to perform coupled: " << coupledRxn.probCoupled << std::endl;
@@ -259,6 +277,7 @@ BackRxn::BackRxn(double offRatekb, ForwardRxn& forwardRxn)
     bindRadSameCom = forwardRxn.bindRadSameCom;
     loopCoopFactor = forwardRxn.loopCoopFactor;
     length3Dto2D = forwardRxn.length3Dto2D;
+    area3Dto1D = forwardRxn.area3Dto1D;
     rxnLabel = forwardRxn.rxnLabel;
     // set reaction type
     rxnType = forwardRxn.rxnType;
@@ -426,4 +445,136 @@ void CreateDestructRxn::display() const
         }
     }
     std::cout << "label: " << rxnLabel << std::endl;
+}
+
+TransmissionRxn::TransmissionRxn(ParsedRxn& parsedRxn, std::vector<MolTemplate>& molTemplateList, bool isForward, int rxnIndex)
+{
+    // set booleans
+    isOnMem = parsedRxn.isOnMem;
+    isSymmetric = parsedRxn.isSymmetric;
+    hasStateChange = parsedRxn.hasStateChange;
+    isObserved = parsedRxn.isObserved;
+    observeLabel = parsedRxn.observeLabel;
+    rxnLabel = parsedRxn.rxnLabel;
+	bindRadius = parsedRxn.bindRadius;
+
+    // set reaction type
+    rxnType = parsedRxn.rxnType;
+    if (isForward == true) {
+        // this is the forward transmission reaction
+
+        // initialize interface lists with default interfaces from MolTemplate
+        for (const auto& reactant : parsedRxn.reactantList) {
+            TransmissionMol tmpMol {};
+            tmpMol.molTypeIndex = reactant.molTypeIndex;
+            tmpMol.molName = reactant.molName;
+            molTemplateList[reactant.molTypeIndex].transmissionRxnIndex = rxnIndex;
+            for (const auto& tempIface : molTemplateList[reactant.molTypeIndex].interfaceList) {
+                RxnIface tmpIface {};
+                tmpIface.ifaceName = tempIface.name;
+                tmpIface.molTypeIndex = reactant.molTypeIndex;
+                tmpIface.relIfaceIndex = tempIface.index;
+                tmpIface.absIfaceIndex = tempIface.stateList[0].index;
+                tmpMol.interfaceList.emplace_back(tmpIface);
+            }
+            this->reactantMolList.emplace_back(tmpMol);
+        }
+
+        for (const auto& product : parsedRxn.productList) {
+            TransmissionMol tmpMol {};
+            tmpMol.molTypeIndex = product.molTypeIndex;
+            tmpMol.molName = product.molName;
+            for (const auto& tempIface : molTemplateList[product.molTypeIndex].interfaceList) {
+                RxnIface tmpIface {};
+                tmpIface.ifaceName = tempIface.name;
+                tmpIface.molTypeIndex = product.molTypeIndex;
+                tmpIface.relIfaceIndex = tempIface.index;
+                tmpIface.absIfaceIndex = tempIface.stateList[0].index;
+                tmpMol.interfaceList.emplace_back(tmpIface);
+            }
+            this->productMolList.emplace_back(tmpMol);
+        }
+
+        for (const auto& reactant : parsedRxn.rxnReactants) {
+            reactantMolList[reactant.speciesIndex].interfaceList[reactant.relIndex].requiresState = reactant.state;
+            reactantMolList[reactant.speciesIndex].interfaceList[reactant.relIndex].requiresInteraction = reactant.isBound;
+            reactantListNew.emplace_back(reactant.ifaceName, reactant.molTypeIndex, reactant.absIndex, reactant.relIndex,
+                reactant.state, reactant.isBound);
+        }
+
+        for (const auto& product : parsedRxn.rxnProducts) {
+            productMolList[product.speciesIndex].interfaceList[product.relIndex].requiresState = product.state;
+            productMolList[product.speciesIndex].interfaceList[product.relIndex].requiresInteraction = product.isBound;
+            productListNew.emplace_back(product.ifaceName, product.molTypeIndex, product.absIndex, product.relIndex,
+                product.state, product.isBound);
+        }
+
+        rateList.emplace_back();
+        rateList.back().rate = parsedRxn.onRate3Dka;
+        rateList.back().otherIfaceLists = parsedRxn.otherIfaceLists;
+
+        absRxnIndex = numberOfRxns;
+        ++numberOfRxns;
+    } else {
+        // this is the backward transmission reaction
+        for (const auto& reactant : parsedRxn.productList) {
+            TransmissionMol tmpMol {};
+            tmpMol.molTypeIndex = reactant.molTypeIndex;
+            tmpMol.molName = reactant.molName;
+            molTemplateList[reactant.molTypeIndex].transmissionRxnIndex = rxnIndex;
+            for (const auto& tempIface : molTemplateList[reactant.molTypeIndex].interfaceList) {
+                RxnIface tmpIface {};
+                tmpIface.ifaceName = tempIface.name;
+                tmpIface.molTypeIndex = reactant.molTypeIndex;
+                tmpIface.relIfaceIndex = tempIface.index;
+                tmpIface.absIfaceIndex = tempIface.stateList[0].index;
+                tmpMol.interfaceList.emplace_back(tmpIface);
+            }
+            this->reactantMolList.emplace_back(tmpMol);
+        }
+
+        for (const auto& product : parsedRxn.reactantList) {
+            TransmissionMol tmpMol {};
+            tmpMol.molTypeIndex = product.molTypeIndex;
+            tmpMol.molName = product.molName;
+            for (const auto& tempIface : molTemplateList[product.molTypeIndex].interfaceList) {
+                RxnIface tmpIface {};
+                tmpIface.ifaceName = tempIface.name;
+                tmpIface.molTypeIndex = product.molTypeIndex;
+                tmpIface.relIfaceIndex = tempIface.index;
+                tmpIface.absIfaceIndex = tempIface.stateList[0].index;
+                tmpMol.interfaceList.emplace_back(tmpIface);
+            }
+            this->productMolList.emplace_back(tmpMol);
+        }
+
+        for (const auto& reactant : parsedRxn.rxnProducts) {
+            reactantMolList[reactant.speciesIndex].interfaceList[reactant.relIndex].requiresState = reactant.state;
+            reactantMolList[reactant.speciesIndex].interfaceList[reactant.relIndex].requiresInteraction = reactant.isBound;
+            reactantListNew.emplace_back(reactant.ifaceName, reactant.molTypeIndex, reactant.absIndex, reactant.relIndex,
+                reactant.state, reactant.isBound);
+        }
+
+        for (const auto& product : parsedRxn.rxnReactants) {
+            productMolList[product.speciesIndex].interfaceList[product.relIndex].requiresState = product.state;
+            productMolList[product.speciesIndex].interfaceList[product.relIndex].requiresInteraction = product.isBound;
+            productListNew.emplace_back(product.ifaceName, product.molTypeIndex, product.absIndex, product.relIndex,
+                product.state, product.isBound);
+        }
+
+        rateList.emplace_back();
+        rateList.back().rate = parsedRxn.offRatekb;
+        rateList.back().otherIfaceLists = parsedRxn.otherIfaceLists;
+
+        absRxnIndex = numberOfRxns;
+        ++numberOfRxns;
+    }
+    // set reactant/product lists, depending on the reaction type
+}
+
+void TransmissionRxn::display() const
+{
+    // TODO: display more information?
+    std::cout << "Absolute index: " << absRxnIndex << '\n';
+    std::cout << "Type: " << rxnType << '\n';
 }

@@ -90,15 +90,16 @@ void MolTemplate::display() const
     std::cout << "Molecule template " << molTypeIndex << '\n';
     std::cout << "Name: " << molName << '\n';
     std::cout << "Copy number:" << copies << '\n';
-    std::cout <<" Diffusion trans: "<<D.x <<' '<<D.y<<' '<<D.z<<'\n';
-    std::cout <<" Diffusion Rot: "<<Dr.x <<' '<<Dr.y<<' '<<Dr.z<<'\n';
-    
+    std::cout << " Diffusion trans: " << D.x << ' ' << D.y << ' ' << D.z << '\n';
+    std::cout << " Diffusion Rot: " << Dr.x << ' ' << Dr.y << ' ' << Dr.z << '\n';
+
     if (isLipid) {
         if (isImplicitLipid)
             std::cout << "Is a implicitLipid: " << std::boolalpha << isImplicitLipid << '\n';
         else
             std::cout << "Is a lipid: " << std::boolalpha << isLipid << '\n';
     }
+    std::cout << "Is a promoter: " << std::boolalpha << isPromoter << '\n';
     std::cout << "Is a rod: " << std::boolalpha << isRod << '\n';
     std::cout << "Is a point: " << std::boolalpha << isPoint << '\n';
     std::cout << "Radius: " << radius << '\n';
@@ -262,6 +263,25 @@ void MolTemplate::set_value(std::string& line, MolKeyword molKeyword)
     }
     case 14: {
         transitionMatrixSize = std::stoi(line);
+        break;
+    }
+    case 15: {
+        outsideCompartment = read_boolean(line);
+        if (outsideCompartment == true) {
+            crossesCompartment = true;
+        }
+        break;
+    }
+    case 16: {
+        insideCompartment = read_boolean(line);
+        if (insideCompartment == true) {
+            crossesCompartment = true;
+        }
+        break;
+    }
+    case 17: {
+        isPromoter = read_boolean(line);
+        std::cout << "Read in isPromoter: " << std::boolalpha << isPromoter << std::endl;
         break;
     }
     default: {

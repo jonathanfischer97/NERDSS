@@ -18,6 +18,8 @@
 #include <map>
 #include <vector>
 
+#include "classes/mpi_functions.hpp"
+
 /*! \enum DebugKeywords
  * \ingroup Parser
  * \brief Debug parameters read in from the command line
@@ -52,6 +54,7 @@ enum class ParamKeyword : int {
     scaleMaxDisplace = 15, //!< scalar of average displacement that is acceptable upon association.
     transitionWrite = 16, //!< interval to write to transition matrix file
     clusterOverlapCheck = 17, //!< is overlap checked by cluster
+    assocDissocWrite = 18, //!< write association and dissociation to a file
 };
 
 /*! \enum MolKeyword
@@ -74,6 +77,9 @@ enum class MolKeyword : int {
     isImplicitLipid = 12, //!< Is it an implicit lipid.
     countTransition = 13, //!< is transition counted during whole simulation
     transitionMatrixSize = 14, //!< size of the transition matrix
+    outsideCompartment = 15, //!< outside the compartment
+    insideCompartment = 16, //!< inside the compartment
+    isPromoter = 17, //!< is the molecule a promoter for transcription initiation
 };
 
 /*! \enum RxnKeyword
@@ -104,6 +110,7 @@ enum class RxnKeyword : int {
     coupledRxnLabel = 19, //!< lable of the coupled reaction
     kcat = 20, //!<rate for a Michaelis-Menten reaction.
     excludeVolumeBound = 21, //!< once two sites bound, still exclude their partners if this is set true
+    area3Dto1D = 22, //!< nm^2, area factor converts 3D to 1D rate
 };
 
 struct Parameters {
@@ -117,12 +124,29 @@ struct Parameters {
         bool forceDissoc { false };
         bool printSystemInfo { false };
         int verbosity { 0 };
+        /*
+        Function serialize serializes the Debug info into array of bytes.
+        */
+        void serialize(unsigned char *arrayRank, int &nArrayRank) {
+        PUSH(forceAssoc);
+        PUSH(forceDissoc);
+        PUSH(printSystemInfo);
+        PUSH(verbosity);
+        }
+        /*
+        Function deserialize deserializes the Debug info from array of bytes.
+        */
+        void deserialize(unsigned char *arrayRank, int &nArrayRank) {
+        POP(forceAssoc);
+        POP(forceDissoc);
+        POP(printSystemInfo);
+        POP(verbosity);
+        }
     };
 
     // parameter values
     int rank;
     int numMolTypes { 0 }; //!< number of MolTemplates. used to be Nprotypes
-    //   int numIfaces { 0 }; //!< total number of interfaces on all MolTemplates. used to be nifaces
     int numTotalSpecies { 0 }; //!< total number of interfaces and states (including products!) possible in the system.
     long long int nItr { 0 }; //!< number of timesteps requested by user. used to be int Nit.
     int numTotalComplex { 0 }; //!< number of complexes in the system at start
@@ -144,6 +168,9 @@ struct Parameters {
     bool hasUniMolStateChange { false };
     bool hasCreationDestruction { false };
 
+    bool checkUnimoleculeReactionPopulation{false};
+    bool hasRankCommunicationForLargeComplex{false};
+
     double scaleMaxDisplace { 100.0 }; //!< in nm. defaults to a large number, which allows most moves even of large magnitude upon association.
     std::string name {}; //!< name of the simulation
     Debug debugParams;
@@ -161,6 +188,7 @@ struct Parameters {
 
     // IO information. Iterators need to be long long because they can exceed 2^32
     bool fromRestart { false }; //!< is this simulation initialized from a restart file. used to be int restart
+    bool assocDissocWrite { false }; //!< is association and dissociation written to a file
     long long int timeWrite { 10 }; //!< timestep interval to print timestep. used to be statwrite
     long long int trajWrite { 10 }; //!< timestep interval to write coordinates file. used to be configwrite
     long long int restartWrite { 10 }; //!< timestep interval to write a restart file
@@ -174,4 +202,89 @@ struct Parameters {
 
     Parameters() = default;
     void set_value(std::string value, ParamKeyword keywords);
+
+    /*
+    Function serialize serializes the Parameters into array of bytes.
+    */
+    void serialize(unsigned char *arrayRank, int &nArrayRank) {
+        PUSH(rank);
+        PUSH(numMolTypes);
+        PUSH(numTotalSpecies);
+        PUSH(nItr);
+        PUSH(numTotalComplex);
+        PUSH(numTotalUnits);
+        PUSH(timeStep);
+        PUSH(mass);
+        PUSH(max2DRxns);
+        PUSH(maxUniqueSpecies);
+        PUSH(itrRestartFrom);
+        PUSH(timeRestartFrom);
+        PUSH(dt);
+        serialize_primitive_vector<long long int>(lastUpdateTransition, arrayRank, nArrayRank);
+        PUSH(numLipids);
+        PUSH(overlapSepLimit);
+        PUSH(implicitLipid);
+        PUSH(hasUniMolStateChange);
+        PUSH(hasCreationDestruction);
+        PUSH(scaleMaxDisplace);
+        serialize_string(name, arrayRank, nArrayRank);
+        debugParams.serialize(arrayRank, nArrayRank);
+        serialize_string(trajFile, arrayRank, nArrayRank);
+        serialize_string(restartFile, arrayRank, nArrayRank);
+        PUSH(isNonEQ);
+        PUSH(rMaxLimit);
+        PUSH(rMaxRadius);
+        PUSH(fromRestart);
+        PUSH(timeWrite);
+        PUSH(trajWrite);
+        PUSH(restartWrite);
+        PUSH(pdbWrite);
+        PUSH(checkPoint);
+        PUSH(transitionWrite);
+        PUSH(clusterOverlapCheck);
+        PUSH(checkUnimoleculeReactionPopulation);
+        PUSH(hasRankCommunicationForLargeComplex);
+    }
+    /*
+    Function deserialize deserializes the Parameters from arrayRank of bytes.
+    */
+    void deserialize(unsigned char *arrayRank, int &nArrayRank) {
+        POP(rank);
+        POP(numMolTypes);
+        POP(numTotalSpecies);
+        POP(nItr);
+        POP(numTotalComplex);
+        POP(numTotalUnits);
+        POP(timeStep);
+        POP(mass);
+        POP(max2DRxns);
+        POP(maxUniqueSpecies);
+        POP(itrRestartFrom);
+        POP(timeRestartFrom);
+        POP(dt);
+        deserialize_primitive_vector<long long int>(lastUpdateTransition, arrayRank, nArrayRank);
+        POP(numLipids);
+        POP(overlapSepLimit);
+        POP(implicitLipid);
+        POP(hasUniMolStateChange);
+        POP(hasCreationDestruction);
+        POP(scaleMaxDisplace);
+        deserialize_string(name, arrayRank, nArrayRank);
+        debugParams.deserialize(arrayRank, nArrayRank);
+        deserialize_string(trajFile, arrayRank, nArrayRank);
+        deserialize_string(restartFile, arrayRank, nArrayRank);
+        POP(isNonEQ);
+        POP(rMaxLimit);
+        POP(rMaxRadius);
+        POP(fromRestart);
+        POP(timeWrite);
+        POP(trajWrite);
+        POP(restartWrite);
+        POP(pdbWrite);
+        POP(checkPoint);
+        POP(transitionWrite);
+        POP(clusterOverlapCheck);
+        POP(checkUnimoleculeReactionPopulation);
+        POP(hasRankCommunicationForLargeComplex);
+    }
 };
